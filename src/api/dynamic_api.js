@@ -159,48 +159,147 @@ var Provider = {
      * Gets model information from Dynamicloud servers.
      *
      * @param modelId model id in Dynamicloud servers
+     * @param callback this callback will be called when response it's available.
      * @return model object
      */
-    loadModel: function (modelId) {
+    loadModel: function (modelId, callback) {
+        var host = configuration["host"];
+        var path = configuration["path.get.model.info"];
 
+        path = path.replace("{csk}", encodeURIComponent(this.credentials.csk)).
+            replace("{aci}", encodeURIComponent(this.credentials.aci));
+        path = path.replace("{mid}", modelId);
+
+        sp.callGetService(host, path, null, function (kind, json) {
+            if (kind === 'OK') {
+                delete json["status"];
+                delete json["response_code"];
+
+                callback(null, json);
+            } else {
+                callback('ERROR', json);
+            }
+        });
     },
 
     /**
      * Loads all models related to CSK and ACI keys in Dynamicloud servers
      *
+     * @param callback this callback will be called when response it's available.
      * @return array of models
      */
-    loadModels: function (modelId) {
+    loadModels: function (callback) {
+        var host = configuration["host"];
+        var path = configuration["path.get.models"];
 
+        path = path.replace("{csk}", encodeURIComponent(this.credentials.csk)).
+            replace("{aci}", encodeURIComponent(this.credentials.aci));
+
+        sp.callGetService(host, path, null, function (kind, json) {
+            if (kind === 'OK') {
+                delete json["status"];
+                delete json["response_code"];
+
+                callback(null, json['models']);
+            } else {
+                callback('ERROR', json);
+            }
+        });
     },
 
     /**
      * Loads all model's fields according ModelID
      *
      * @param modelId model Id
+     * @param callback this callback will be called when response it's available.
+     *
      * @return list of model's fields.
      */
-    loadFields: function (modelId) {
+    loadFields: function (modelId, callback) {
+        var host = configuration["host"];
+        var path = configuration["path.get.fields"];
 
+        path = path.replace("{csk}", encodeURIComponent(this.credentials.csk)).
+            replace("{aci}", encodeURIComponent(this.credentials.aci));
+        path = path.replace("{mid}", modelId);
+
+        sp.callGetService(host, path, null, function (kind, json) {
+            if (kind === 'OK') {
+                delete json["status"];
+                delete json["response_code"];
+
+                callback(null, du.buildFieldArray(json['fields']));
+            } else {
+                callback('ERROR', json['models']);
+            }
+        });
     },
 
     /**
      * Executes an update using query as a selection
      *
      * @param query selection
+     * @param callback this callback will be called when response it's available.
      * @param values is an object with the data to update
      */
-    updateWithSelection: function (query, values) {
+    updateWithSelection: function (query, values, callback) {
+        var host = configuration["host"];
+        var path = configuration["path.update.selection"];
 
+        path = path.replace("{csk}", encodeURIComponent(this.credentials.csk)).
+            replace("{aci}", encodeURIComponent(this.credentials.aci));
+        path = path.replace("{mid}", query.modelId);
+
+        var selection = du.buildString(query.conditions, null, null, null, '', []);
+        var fields = '{"updates": ' + du.buildFieldsJson(values) + '}';
+
+        var params = {
+            fields: fields,
+            selection: selection
+        };
+
+        sp.callPostService(host, path, params, function (kind, json) {
+            if (kind === 'OK') {
+                delete json["status"];
+                delete json["response_code"];
+
+                callback(null);
+            } else {
+                callback('ERROR', json['models']);
+            }
+        });
     },
 
     /**
      * Executes a delete using query as a selection
-     *
+
+     * @param callback this callback will be called when response it's available.
      * @param query selection
      */
-    deleteWithSelection: function (query) {
+    deleteWithSelection: function (query, callback) {
+        var host = configuration["host"];
+        var path = configuration["path.delete.selection"];
 
+        path = path.replace("{csk}", encodeURIComponent(this.credentials.csk)).
+            replace("{aci}", encodeURIComponent(this.credentials.aci));
+        path = path.replace("{mid}", query.modelId);
+
+        var selection = du.buildString(query.conditions, null, null, null, '', []);
+
+        var params = {
+            selection: selection
+        };
+
+        sp.callPostService(host, path, params, function (kind, json) {
+            if (kind === 'OK') {
+                delete json["status"];
+                delete json["response_code"];
+
+                callback(null);
+            } else {
+                callback('ERROR', json['models']);
+            }
+        });
     }
 };
 

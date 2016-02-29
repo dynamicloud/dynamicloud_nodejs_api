@@ -209,5 +209,35 @@ module.exports = {
         });
 
         return normalized;
+    },
+    buildItems: function (array) {
+        if (array !== null && array.length > 0) {
+            var items = [];
+
+            _.each(array, function (ri) {
+                if (ri !== null) {
+                    items.push(
+                        {
+                            text: ri['text'],
+                            value: ri['value']
+                        }
+                    );
+                }
+            });
+
+            return items;
+        }
+
+        return [];
+    },
+    buildFieldArray: function (fs) {
+        var fields = [];
+        $.each(fs, function (key, jf, caller) {
+            jf['items'] = caller.buildItems(jf['items']);
+
+            fields.push(jf);
+        }, this);
+
+        return fields;
     }
 };

@@ -25,10 +25,10 @@
  * @author Eleazar Gomez
  */
 module.exports = {
-    each: function (object, callback) {
+    each: function (object, callback, caller) {
         for (var key in object) {
             if (object.hasOwnProperty(key)) {
-                var result = callback(key, object[key]);
+                var result = callback(key, object[key], caller);
 
                 if (result == -1) {
                     return;

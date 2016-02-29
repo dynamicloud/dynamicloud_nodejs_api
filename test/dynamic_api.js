@@ -33,6 +33,7 @@ helper.describe('Dynamic API', function () {
 
         query.getResults(function (error, results) {
             console.log(results);
+            assert.equal(null, error);
         });
     });
 
@@ -206,6 +207,47 @@ helper.describe('Dynamic API', function () {
                         });
                     });
             });
+        });
+    });
+
+    helper.it('Should load model', function () {
+        provider.loadModel(modelId, function (error, model) {
+            console.log(model);
+            assert.equal(null, error);
+        });
+    });
+
+    helper.it('Should load models', function () {
+        provider.loadModels(function (error, models) {
+            console.log(models);
+            assert.equal(null, error);
+        });
+    });
+
+    helper.it('Should load fields', function () {
+        provider.loadFields(modelId, function (error, fields) {
+            console.log(fields);
+            assert.equal(null, error);
+        });
+    });
+
+    helper.it('Should update with selection', function () {
+        var query = provider.createQuery(modelId);
+        query.add(dc.conditions.equals("id", 75));
+
+        provider.updateWithSelection(query, {
+            'lonlinetext': 'Update with selection'
+        }, function (error) {
+            assert.equal(null, error);
+        });
+    });
+
+    helper.it('Should update with selection', function () {
+        var query = provider.createQuery(modelId);
+        query.add(dc.conditions.equals("id", -75));
+
+        provider.deleteWithSelection(query, function (error) {
+            assert.equal(null, error);
         });
     });
 });
