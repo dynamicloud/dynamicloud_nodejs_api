@@ -19,16 +19,14 @@ To read the NodeJs API documentation click [here](http://www.dynamicloud.org "Dy
 
 This API provides components to execute operations on [Dynamicloud](http://www.dynamicloud.org/ "Dynamicloud") servers.  The main components and methods are the followings:
 
-1. [RecordModel](#recordmodel)
-2. [RecordCredential](#recordcredential)
-3. [BoundInstance](#boundinstance)
-4. [@Bind](#annotation-bind)
-5. [DynamicProvider](#dynamicprovider)
+1. [Model](#model)
+2. [Credential](#credential)
+3. [DynamicProvider](#dynamicprovider)
   1. [DynamicProvider's methods](#methods)
-6. [Query](#query-class)
-  1. [RecordResults](#recordresults)
-  - [Condition](#conditions-class)
-  - [Conditions](#conditions-class)
+4. [Query](#query-object)
+  1. [Results](#results)
+  - [Condition](#conditions-object)
+  - [Conditions](#conditions-object)
   - [Between condition](#between-condition)
   - [Exists condition](#exists-condition)
   - [Join clause](#join-clause)
@@ -36,8 +34,8 @@ This API provides components to execute operations on [Dynamicloud](http://www.d
   - [Order by](#order-by)
   - [Group by and Projection](#group-by-and-projection)
   - [Functions as a Projection](#functions-as-a-projection)
-7. [Update using selection](#update-using-selection)
-8. [Delete using selection](#delete-using-selection)
+5. [Update using selection](#update-using-selection)
+6. [Delete using selection](#delete-using-selection)
 
 These components will allow you to connect on Dynamicloud servers, authenticate and execute operations like *loadRecord*, *updateRecord*, *deleteRecord*, *get record's information according to selection*, *get record's information according to projection*, etc.  The next step is explain every components and how to execute operations.  
 
@@ -178,9 +176,9 @@ var query = provider.createQuery(modelId);
 
 ```
 
-#Query class
+#Query object
 
-This class provides a set of methods to add conditions, order by and group by clauses, projections, etc.
+This object provides a set of methods to add conditions, order by and group by clauses, projections, etc.
 
 ```javascript
 function  add(condition);
