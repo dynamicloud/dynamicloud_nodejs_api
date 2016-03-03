@@ -41,14 +41,14 @@ These components will allow you to connect on Dynamicloud servers, authenticate 
 
 # Model
 
-To load records in this API you're going to use a **Model ID**.  Every record belongs to a Model.
+To load records in this API you're going to use a `Model Id`.  Every record belongs to a Model.
 
 #Credential
 
 To gain access in Dynamicloud servers you need to provide the API keys.  These APIs ware provided at moment of your registration.
 
 #DynamicProvider
-**DynamicProvider** provides important functions and can be used as follow:
+`DynamicProvider` provides important functions and can be used as follow:
 ```javascript
 var dc = require('dynamicloud');
 
@@ -200,9 +200,9 @@ With the Query object we can add conditions like EQUALS, IN, OR, AND, GREATER TH
 #Results
 
 **This object provides three attributes:**
-- **totalRecords:** The total records in Model
-- **fastReturnedSize:** The returned size of records that have matched with Query conditions
-- **records:** A list of records.
+- `totalRecords` The total records in Model
+- `fastReturnedSize` The returned size of records that have matched with Query conditions
+- `records` A list of records.
 
 **The uses of this class would be as a follow:**
 
@@ -249,7 +249,7 @@ function rightOuterJoin(modelId, alias, Condition);
 function innerJoin(modelId, alias, Condition);
 ```
 
-To add conditions to a Query object it must call the add function **(query.add(condition))**
+To add conditions to a Query object it must call the add function `(query.add(condition))`
 
 **For example:**
 
@@ -281,7 +281,7 @@ Query object provides a function called `getResultsWithProjection(projection, ca
 
 #Between condition
 
-With this condition you can build selections like **age between 24 and 30** or **birthdate bewteen '2010-01-01 00:00:00' and '2015-11-01 23:59:59'**.
+With this condition you can build selections like `age between 24 and 30` or `birthdate bewteen '2010-01-01 00:00:00' and '2015-11-01 23:59:59'`.
 
 **A Between condition is composed by: field's identifier and an interval (left and right)**
 
