@@ -13,7 +13,7 @@ You can install this module in your system using the npm command:
 
 #NodeJs documentation
 
-To read the NodeJs API documentation click [here](http://www.dynamicloud.org "Dynamicloud NodeJs API documentation")
+To read the NodeJs API documentation click [here](https://www.npmjs.com/package/dynamicloud "Dynamicloud NodeJs API documentation")
 
 # Getting started
 
