@@ -202,7 +202,7 @@ With the Query object we can add conditions like EQUALS, IN, OR, AND, GREATER TH
 **This object provides three attributes:**
 - `totalRecords` The total records in Model
 - `fastReturnedSize` The returned size of records that have matched with Query conditions
-- `records` A list of records.
+- `records` An array of records.
 
 **The uses of this class would be as a follow:**
 
@@ -261,7 +261,7 @@ var query = provider.createQuery(modelId);
 query.add(dc.conditions.like("name", "Eleaz%"));
 ```
 
-Every call of add function in object Query will put the Condition in a ordered list of conditions, that list will be joint as a AND condition.  So, if you add two conditions as follow:
+Every call of add function in object Query will put the Condition in a ordered array of conditions, that array will be joint as a AND condition.  So, if you add two conditions as follow:
 
 ```javascript
 var dc = require('dynamicloud');
@@ -442,7 +442,7 @@ languagesRecordModel = 123;
 
 /**
 * Conditions class provides: innerJoin, leftJoin, rightJoin, leftOuterJoin and rightOuterJoin.
-* If you need to add more than one join, you have to call query.join(...) and will be added in the query join list.
+* If you need to add more than one join, you have to call query.join(...) and will be added in the query join array.
 *
 * This is an example to get the count of languages of every user.
 */
