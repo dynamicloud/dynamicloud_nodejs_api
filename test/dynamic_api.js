@@ -3,11 +3,11 @@ var helper = require('./helper.js');
 var dc = require('../src/app.js');
 
 helper.describe('Dynamic API', function () {
-    const modelId = 980190988;
+    const modelId = 123;
 
     const provider = dc.buildProvider({
-        csk: 'csk#5c6f68d48ff4905a80d396a465580d34fc6e8fa2',
-        aci: 'aci#81969f0abe4d15d4304411e65c6557e64b3b6576'
+        csk: 'csk#...',
+        aci: 'aci#...'
     });
 
     helper.it('Should execute exists condition', function () {
