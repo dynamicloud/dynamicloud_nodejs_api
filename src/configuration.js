@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Copyright (c) 2016 Dynamicloud
  * <p/>
@@ -51,5 +53,5 @@ module.exports = {
     'path.update.selection': '/api_records/{csk}/{aci}/update_using_selection/{mid}',
 // this url must be executed using post method
     'path.delete.selection': '/api_records/{csk}/{aci}/delete_using_selection/{mid}',
-    'version': '1.0.0'
+    'version': '1.0.3'
 };

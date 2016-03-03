@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('../../utils/array_utils.js');
 var du = require('../../utils/dynamic_utils.js');
 

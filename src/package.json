@@ -1,9 +1,9 @@
 {
   "name": "dynamicloud",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Dynamicloud node js API allows you to store data into the cloud.",
   "main": "app.js",
-  "private": true,
+  "private": false,
   "scripts": {},
   "keywords": [
     "cloud",

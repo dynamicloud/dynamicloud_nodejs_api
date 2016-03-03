@@ -1,3 +1,5 @@
+"use strict";
+
 var conditionFactory = require('./query_condition.js');
 
 /**
@@ -262,7 +264,7 @@ var Conditions = {
     }
 };
 
-const conditions = Object.create(Conditions);
+var conditions = Object.create(Conditions);
 module.exports = {
     getConditionInstance: function () {
         return conditions;

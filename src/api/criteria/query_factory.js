@@ -1,3 +1,5 @@
+"use strict";
+
 var dc = require('../criteria/dynamic_criteria.js');
 var du = require('../../utils/dynamic_utils.js');
 var configuration = require('../../configuration.js');

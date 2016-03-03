@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Copyright (c) 2016 Dynamicloud
  * <p/>

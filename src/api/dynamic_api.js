@@ -1,3 +1,5 @@
+"use strict";
+
 var du = require('../utils/dynamic_utils.js');
 var qf = require('./criteria/query_factory.js');
 var sp = require('../service/service_processor.js');

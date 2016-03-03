@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('./array_utils.js');
 var $ = require('./object_utils.js');
 

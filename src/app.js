@@ -1,3 +1,5 @@
+"use strict";
+
 var providerFactory = require('./api/dynamic_api.js');
 var conditionFactory = require('./api/criteria/dynamic_criteria.js');
 
