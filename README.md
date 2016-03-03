@@ -17,12 +17,12 @@ To read the NodeJs API documentation click [here](http://www.dynamicloud.org "Dy
 
 # Getting started
 
-This API provides components to execute operations on [Dynamicloud](http://www.dynamicloud.org/ "Dynamicloud") servers.  The main components and methods are the followings:
+This API provides components to execute operations on [Dynamicloud](http://www.dynamicloud.org/ "Dynamicloud") servers.  The main components and function are the followings:
 
 1. [Model](#model)
 2. [Credential](#credential)
 3. [DynamicProvider](#dynamicprovider)
-  1. [DynamicProvider's methods](#methods)
+  1. [DynamicProvider's function](#functions)
 4. [Query](#query-object)
   1. [Results](#results)
   - [Condition](#conditions-object)
@@ -30,7 +30,7 @@ This API provides components to execute operations on [Dynamicloud](http://www.d
   - [Between condition](#between-condition)
   - [Exists condition](#exists-condition)
   - [Join clause](#join-clause)
-  - [Next, Offset and Count methods](#next-offset-and-count-methods)
+  - [Next, Offset and Count functions](#next-offset-and-count-functions)
   - [Order by](#order-by)
   - [Group by and Projection](#group-by-and-projection)
   - [Functions as a Projection](#functions-as-a-projection)
@@ -48,25 +48,25 @@ To load records in this API you're going to use a **Model ID**.  Every record be
 To gain access in Dynamicloud servers you need to provide the API keys.  These APIs ware provided at moment of your registration.
 
 #DynamicProvider
-**DynamicProvider** provides important methods and can be used as follow:
+**DynamicProvider** provides important functions and can be used as follow:
 ```javascript
 var dc = require('dynamicloud');
 
 var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 ```
  
-**First, let's explain the initialization method:**
+**First, let's explain the initialization function:**
  ```javascript
 function buildProvider(credentialObject)
  ```
-This method receives an object with the credential to gain access.  The credential object is composed of Client Secret Key (CSK) and Application Client ID (ACI), these keys were provided at moment of your registration.
+This function receives an object with the credential to gain access.  The credential object is composed by Client Secret Key (CSK) and Application Client ID (ACI), these keys were provided at moment of your registration.
  
-#Methods
+#Functions
  
  **Load Record**
 ```javascript
 /**
- * This method will load a record using recordId.
+ * This function will load a record using recordId.
  *
  * @param recordId        record id
  * @param modelId        model id
@@ -76,9 +76,9 @@ This method receives an object with the credential to gain access.  The credenti
  */
 loadRecord: function (recordId, modelId, callback)
 ```
-This method loads a record according to rid *(RecordID)* in model *(ModelID)*.
+This function loads a record according to rid *(RecordID)* in model *(ModelID)*.
 
-**For example, a call of this method would be:**
+**For example, a call of this function would be:**
  ```javascript
 provider.loadRecord(141, modelId, function (error, record) {
     /**
@@ -91,7 +91,7 @@ provider.loadRecord(141, modelId, function (error, record) {
 **Save Record**
  ```javascript
 /**
- * This method saves a record into Dynamicloud
+ * This function saves a record into Dynamicloud
  * @param modelId model target
  * @param record record object that will be saved
  *
@@ -100,15 +100,15 @@ provider.loadRecord(141, modelId, function (error, record) {
  */
 saveRecord: function (modelId, record, callback)
 ```
-This method saves a record (Object) using the data within it.
+This function saves a record (Object) using the data within it.
 
-**For example, a call of this method would be:**
+**For example, a call of this function would be:**
  ```javascript
 provider.saveRecord(modelId, {
     'lonlinetext': 'testing',
     'lonlinelevel': 'debug'
 }, function (error, record) {
-  // This method will have the record id in Dynamicloud
+  // This function will have the record id in Dynamicloud
   console.log(record.rid);
 }):
 ```
@@ -116,7 +116,7 @@ provider.saveRecord(modelId, {
 **Update Record**
  ```javascript
 /**
- * This method will call an update operation in Dynamicloud servers
+ * This function will call an update operation in Dynamicloud servers
  * using model and BoundInstance object
  *
  * @param modelId    modelId
@@ -125,9 +125,9 @@ provider.saveRecord(modelId, {
  */
 updateRecord: function (modelId, record, callback)
 ```
-This method updates the record (record['rid'])
+This function updates the record (record['rid'])
 
-**For example, a call of this method would be:**
+**For example, a call of this function would be:**
  ```javascript
 provider.updateRecord(modelId, record, function (error, record) {
   console.log('Updated record = ' + record['rid']);
@@ -137,7 +137,7 @@ provider.updateRecord(modelId, record, function (error, record) {
 **Delete Record**
  ```javascript
 /**
- * This method will call a delete operation in Dynamicloud servers
+ * This function will call a delete operation in Dynamicloud servers
  * using model and Record id
  *
  * @param modelId model Id
@@ -146,9 +146,9 @@ provider.updateRecord(modelId, record, function (error, record) {
  */
 deleteRecord: function (modelId, recordId, callback)
 ```
-This method deletes a record from the Model
+This function deletes a record from the Model
 
-**For example, a call of this method would be:**
+**For example, a call of this function would be:**
  ```javascript
 provider.deleteRecord(modelId, record['rid'], function (error, record) {
   console.log('Deleted record = ' + record['rid']);
@@ -165,9 +165,9 @@ provider.deleteRecord(modelId, record['rid'], function (error, record) {
  */
 createQuery: function (modelId)
 ```
-This method returns a Query to get records according to a specific selection.
+This function returns a Query to get records according to a specific selection.
 
-**For example, a call of this method would be:**
+**For example, a call of this function would be:**
  ```javascript
 var dc = require('dynamicloud');
 var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
@@ -178,7 +178,7 @@ var query = provider.createQuery(modelId);
 
 #Query object
 
-This object provides a set of methods to add conditions, order by and group by clauses, projections, etc.
+This object provides a set of functions to add conditions, order by and group by clauses, projections, etc.
 
 ```javascript
 function add(condition);
@@ -195,7 +195,7 @@ function getResultsByProjection(projection, callback);
 function next(callback);
 ```
 
-With the Query object we can add conditions like EQUALS, IN, OR, AND, GREATER THAN, LESSER THAN, etc.  The query object is mutable and every call of its methods will return the same instance.
+With the Query object we can add conditions like EQUALS, IN, OR, AND, GREATER THAN, LESSER THAN, etc.  The query object is mutable and every call of its functions will return the same instance.
 
 #Results
 
@@ -214,7 +214,7 @@ var query = provider.createQuery(modelId);
 query.add(dc.conditions.like("name", "Eleaz%"));
 
 /**
-* This method will call getResultsByProjection(null, callback)
+* This function will call getResultsByProjection(null, callback)
 */
 query.getResults(function(error, results) {
   _.each(results.records, function(item) {
@@ -225,7 +225,7 @@ query.getResults(function(error, results) {
 
 #Conditions object
 
-This object provides a set of methods to build conditions and add them to the query object
+This object provides a set of functions to build conditions and add them to the query object
 ```javascript
 function and(left, right);
 function or(left, right);
@@ -249,7 +249,7 @@ function rightOuterJoin(modelId, alias, Condition);
 function innerJoin(modelId, alias, Condition);
 ```
 
-To add conditions to a Query object it must call the add method **(query.add(condition))**
+To add conditions to a Query object it must call the add function **(query.add(condition))**
 
 **For example:**
 
@@ -261,7 +261,7 @@ var query = provider.createQuery(modelId);
 query.add(dc.conditions.like("name", "Eleaz%"));
 ```
 
-Every call of add method in object Query will put the Condition in a ordered list of conditions, that list will be joint as a AND condition.  So, if you add two conditions as follow:
+Every call of add function in object Query will put the Condition in a ordered list of conditions, that list will be joint as a AND condition.  So, if you add two conditions as follow:
 
 ```javascript
 var dc = require('dynamicloud');
@@ -273,11 +273,11 @@ query.add(dc.conditions.like("name", "Eleaz%"));
 query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions..equals("age", 33));
 ```
 
-These two calls of add method will produce something like this:
+These two calls of add function will produce something like this:
 
-`name like 'Eleazar%' **AND** age = 33`
+`name like 'Eleazar%' AND age = 33`
 
-Query object provides a method called **getResultsWithProjection(callback)**, this method will execute a request using the *ModelId* and *Conditions*. The response from Dynamicloud will be encapsulated in a javascript object.
+Query object provides a function called `getResultsWithProjection(projection, callback)`, this function will execute a request using the *ModelId* and *Conditions*. The response from Dynamicloud will be encapsulated in a javascript object.
 
 #Between condition
 
@@ -463,13 +463,13 @@ query.getResultsWithProjection(["user.id as userid", "count(1) as count"], funct
 });
 ```
 
-#Next, Offset and Count methods
+#Next, Offset and Count functions
 
-Query object provides a method to walk across the records of a Model.  Imagine a model with a thousand of records, obviously you shouldn't load the whole set of records, you need to find a way to load a sub-set by demand.
+Query object provides a function to walk across the records of a Model.  Imagine a model with a thousand of records, obviously you shouldn't load the whole set of records, you need to find a way to load a sub-set by demand.
 
-The method to meet this goal is `next`.  Basically, the next method will increase the offset automatically and will execute the request with the previous conditions. By default, offset and count will have 0 and 15 respectively.
+The function to meet this goal is `next`.  Basically, the next function will increase the offset automatically and will execute the request with the previous conditions. By default, offset and count will have 0 and 15 respectively.
 
-**The uses of this method would be as a follow:**
+**The uses of this function would be as follow:**
 
 ```javascript
 var dc = require('dynamicloud');
@@ -525,7 +525,7 @@ query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions.equals("age", 
 query.count = 10;
 query.offset = 1;
 
-query.orderBy("email").asc(); // Here you can call desc() method
+query.orderBy("email").asc(); // Here you can call desc() function
 
 query.getResults(function(error, results) {
   console.log(results.records);
@@ -547,7 +547,7 @@ query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions.equals("age", 
 query.count = 10;
 query.offset = 10;
 
-query.orderBy("email").asc(); // Here you can call desc() method
+query.orderBy("email").asc(); // Here you can call desc() function
 
 // These are the fields in your projection
 query.groupBy("name, email");
@@ -558,7 +558,7 @@ var results = query.getResultsWithProjection(["name", "email"], function(error, 
 ```
 #Functions as a Projection
 
-Query object provides the setProjection method to specify the fields you want to fetch in a query.  In this method you can set the function you want to call. Every function must has an alias to bind it with a setMethod in BoundInstance object.
+The getResultsWithProjection allows you to specify the projection.
 
 ```javascript
 var dc = require('dynamicloud');
@@ -577,7 +577,7 @@ var results = query.getResultsWithProjection(["avg(age) as average"], function(e
 
 There are situations where you need to update records using a specific selection.
 
-In this example we are going to update the **name** where age > 24
+In this example we are going to update the `name` where age > 24
 
 ```javascript
 var dc = require('dynamicloud');
@@ -587,9 +587,9 @@ var query = provider.createQuery(model);
 query.add(dc.conditions.greaterThan("age", 24));
 
 /*
- * This method will use the data object and the query object to update only the records that match with the selection.
+ * This function will use the data object and the query object to update only the records that match with the selection.
  */
-provider.updateWithSelection(query, {}, function(error) {
+provider.updateWithSelection(query, {'name' = 'Eleazar'}, function(error) {
    console.log("Updated!");
 });
 ```
@@ -608,10 +608,9 @@ var query = provider.createQuery(model);
 query.add(dc.conditions.greaterThan("age", 24));
 
 /*
- * This method will use the query object to delete only the records that match with the selection.
+ * This function will use the query object to delete only the records that match with the selection.
  */
-provider.deleteWithSelection(query, {}, function(error) {
+provider.deleteWithSelection(query, function(error) {
    console.log("Deleted!");
 });
 ```
- 
