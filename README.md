@@ -181,15 +181,16 @@ var query = provider.createQuery(modelId);
 This object provides a set of methods to add conditions, order by and group by clauses, projections, etc.
 
 ```javascript
-function  add(condition);
-function  join(condition);
-function  asc();
-function  desc();
+function add(condition);
+function join(condition);
+function asc();
+function desc();
 alias=
 count=
 offset=
-orderBy=
-groupBy=
+function orderBy(attribute);
+function groupBy(attributes)
+function getResults(callback);
 function getResultsByProjection(projection, callback);
 function next(callback);
 ```
@@ -327,64 +328,59 @@ SELECT * FROM users u WHERE EXISTS (SELECT * FROM vip_users v WHERE v.user_id = 
 
 **Let's do it using Dynamicloud's library:**
 
-```java
-DynamicProvider<LangCountBean> provider = new DynamicProviderImpl<>(new RecordCredential(CSK, ACI));
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-Query query = provider.createQuery(userModel);
+var query = provider.createQuery(modelId);
 
 /**
 * This is the alias to recordModel, this alias is necessary if you need to execute an exists using two models
 */
-query.setAlias("u");
+query.alias = "u";
 
-ExistsCondition exists = Conditions.exists(vipmodel, "v");
+var exists = dc.conditions.exists(vipmodel, "v");
 
 /**
 * The dollar symbols are to avoid to use right part as a String, but literally v.user_id = u.id
 */
-exists.add(Conditions.equals("v.user_id", "$u.id$"));
+exists.add(dc.conditions.equals("v.user_id", "$u.id$"));
 
 query.add(exists);
 
-try {
-  RecordResults results = query.list();
-  .
-  .
-  .
-} catch (DynamicloudProviderException e) {
-  //Oops!! What's wrong mister e?
-}
+query.getResults(function(error, results) {
+  console.log(results.records);
+});
+.
+.
+.
 ```
 
 **If you want to get the users without vip label:**
 
-```java
-DynamicProvider<LangCountBean> provider = new DynamicProviderImpl<>(new RecordCredential(CSK, ACI));
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-Query query = provider.createQuery(userModel);
+var query = provider.createQuery(modelId);
 
 /**
 * This is the alias to recordModel, this alias is necessary if you need to execute an exists using two models
 */
-query.setAlias("u");
+query.alias = "u";
 
-ExistsCondition exists = Conditions.notExists(vipmodel, "v");
+var exists = dc.conditions.notExists(vipmodel, "v");
 
 /**
 * The dollar symbols are to avoid to use right part as a String, but literally v.user_id = u.id
 */
-exists.add(Conditions.equals("v.user_id", "$u.id$"));
+exists.add(dc.conditions.equals("v.user_id", "$u.id$"));
 
 query.add(exists);
 
-try {
-  RecordResults results = query.list();
-  .
-  .
-  .
-} catch (DynamicloudProviderException e) {
-  //Oops!! What's wrong mister e?
-}
+query.getResults(function(error, results) {
+  console.log(results.records);
+});
 ```
 
 **Another capability in Exists condition is the JoinClauses to execute correlated queries with Joins, for example:**
@@ -392,35 +388,31 @@ try {
 SELECT * FROM users u WHERE EXISTS (SELECT * FROM vip_users v JOIN vip_country c ON c.vip_id = v.id WHERE v.user_id = u.id AND c.country_iso = 'BR')
 ```
 
-```java
-DynamicProvider<LangCountBean> provider = new DynamicProviderImpl<>(new RecordCredential(CSK, ACI));
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-Query query = provider.createQuery(userModel);
+var query = provider.createQuery(modelId);
 
 /**
 * This is the alias to recordModel, this alias is necessary if you need to execute an exists using two models
 */
-query.setAlias("u");
+query.alias = "u";
 
-ExistsCondition exists = Conditions.exists(vipmodel, "v");
+var exists = Conditions.exists(vipmodel, "v");
 
-exists.join(Conditions.innerJoin(countryModel, "c", "c.vip_id = v.id"));
+exists.join(dc.conditions.innerJoin(countryModel, "c", "c.vip_id = v.id") /*This is the ON condition*/);
 
 /**
 * The dollar symbols are to avoid to use right part as a String, but literally v.user_id = u.id
 */
-exists.add(Conditions.and(Conditions.equals("v.user_id", "$u.id$"), Conditions.equals("c.country_iso", "BR")));
+exists.add(dc.conditions.and(dc.conditions.equals("v.user_id", "$u.id$"), dc.conditions.equals("c.country_iso", "BR")));
 
 query.add(exists);
 
-try {
-  RecordResults results = query.list();
-  .
-  .
-  .
-} catch (DynamicloudProviderException e) {
-  //Oops!! What's wrong mister e?
-}
+query.getResults(function(error, results) {
+  console.log(results.records);
+});
 ```
 
 #Join Clause
@@ -429,176 +421,156 @@ With Join Clause you can execute conditions and involve more than one model.  Th
 
 **A Join Clause is composed by: Model, Type, Alias and ON condition:**
 
-```java
-DynamicProvider<LangCountBean> provider = new DynamicProviderImpl<>(new RecordCredential(CSK, ACI));
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
 /**
 * Query has the main model 'user'
 */
-Query<JoinResultBean> query = provider.createQuery(userModel);
+var query = provider.createQuery(modelId);
 
-try {
-    /**
-     * This is the alias to recordModel, this alias is necessary to use JoinClause
-     */
-    query.setAlias("user");
+/**
+ * This is the alias to recordModel, this alias is necessary to use JoinClause
+ */
+query.alias = "user";
 
-    /**
-     * It is important the receptor bean to attach the results to it.  In this exemple, this bean must declare the userId and 
-     * count methods.
-     */
-    recordModel.setBoundClass(LangCountBean.class);
+/**
+* This is the model 'languages' to join with model 'user'
+*/
+languagesRecordModel = 123;
 
-    query.setProjection(new String[]{"user.id as userid", "count(1) as count"});
-    
-    /**
-    * This is the model 'languages' to join with model 'user'
-    */
-    RecordModel languagesRecordModel = new RecordModel(...);
-    
-    /**
-    * Conditions class provides: innerJoin, leftJoin, rightJoin, leftOuterJoin and rightOuterJoin.
-    * If you need to add more than one join, you have to call query.join(...) and will be added in the query join list.
-    *
-    * This is an example to get the count of languages of every user.
-    */
-    query.join(Conditions.innerJoin(languagesRecordModel, "lang", "user.id = lang.userid"));
+/**
+* Conditions class provides: innerJoin, leftJoin, rightJoin, leftOuterJoin and rightOuterJoin.
+* If you need to add more than one join, you have to call query.join(...) and will be added in the query join list.
+*
+* This is an example to get the count of languages of every user.
+*/
+query.join(dc.conditions.innerJoin(languagesRecordModel, "lang", "user.id = lang.userid"));
 
-    /**
-    * The Join Clause could be executed using a selection
-    */
-    query.add(Conditions.greaterThan("user.age", 25));
-    
-    /**
-    * You can group the results to use sum, count, avg, etc.
-    */
-    query.groupBy("user.id");
+/**
+* The Join Clause could be executed using a selection
+*/
+query.add(dc.conditions.greaterThan("user.age", 25));
 
-    RecordResults<JoinResultBean> results = query.list();
-    if (results.getFastReturnedSize() > 0) {
-        JoinResultBean bean = results.getRecords().get(0);
+/**
+* You can group the results to use sum, count, avg, etc.
+*/
+query.groupBy("user.id");
 
-        // Code here to manipulate the results
-    }
-} catch (DynamicloudProviderException ignore) {
-}
+query.getResultsWithProjection(["user.id as userid", "count(1) as count"], function(error, results) {
+  console.log(results.records);
+});
 ```
 
 #Next, Offset and Count methods
 
-Query class provides a method to walk across the records of a Model.  Imagine a model with a thousand of records, obviously you shouldn't load the whole set of records, you need to find a way to load a sub-set by demand.
+Query object provides a method to walk across the records of a Model.  Imagine a model with a thousand of records, obviously you shouldn't load the whole set of records, you need to find a way to load a sub-set by demand.
 
-The method to meet this goal is **next**.  Basically, the next method will increase the offset automatically and will execute the request with the previous conditions. By default, offset and count will have 0 and 15 respectively.
+The method to meet this goal is `next`.  Basically, the next method will increase the offset automatically and will execute the request with the previous conditions. By default, offset and count will have 0 and 15 respectively.
 
 **The uses of this method would be as a follow:**
 
-```java
-DynamicProvider<ModelField> provider = new DynamicProviderImpl<ModelField>(recordCredential);
-recordModel.setBoundClass(ModelField.class);
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-Query<ModelField> query = provider.createQuery(model);
-query.add(Conditions.like("name", "Eleaz%")).add(Conditions.equals("age", 33));
+var query = provider.createQuery(model);
+query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions.equals("age", 33));
 
-RecordResults results = query.list();
-for (ModelField item : results.getRecords()) {
-  String email = item.getEmail():
-}
-
-results = query.next();
-
-//Loop with the next 15 records
-for (ModelField item : results.getRecords()) {
-  String email = item.getEmail():
-}
+query.getResults(function(error, results) {
+  console.log(results.records);
+  
+  query.next(function(error, results) {
+    console.log(results.records);
+  });
+});
 ```
 
-If you want to set an **offset** or **count**, follow this guideline:
+If you want to set an `offset` or `count`, follow this guideline:
 
-```java
-DynamicProvider<ModelField> provider = new DynamicProviderImpl<ModelField>(recordCredential);
-recordModel.setBoundClass(ModelField.class);
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-Query<ModelField> query = provider.createQuery(model);
-query.add(Conditions.like("name", "Eleaz%")).add(Conditions.equals("age", 33));
+var query = provider.createQuery(model);
+query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions.equals("age", 33));
 
 //Every call will fetch max 10 records and will start from eleventh record.
-query.setCount(10).setOffset(1);
+query.count = 10;
+query.offset = 10;
 
-RecordResults results = query.list();
-for (ModelField item : results.getRecords()) {
-  String email = item.getEmail();
-}
-
-//This call will fetch max 10 records and will start from twenty first record.
-results = query.next();
-
-//Loop through the next 10 records
-for (ModelField item : results.getRecords()) {
-  String email = item.getEmail();
-}
+query.getResults(function(error, results) {
+  console.log(results.records);
+  
+  //This call will fetch max 10 records and will start from twenty first record.
+  query.next(function(error, results) {
+    console.log(results.records);
+  });
+});
 ```
 
 #Order by
 
-To fetch records ordered by a specific field, the query object provides the method **orderBy**.  To sort the records in a descending/ascending order you must call asc/desc method after call orderBy method.
+To fetch records ordered by a specific field, the query object provides the function `orderBy`.  To sort the records in a descending/ascending order you must set asc/desc attribute after call orderBy function.
 
-```java
-DynamicProvider<ModelField> provider = new DynamicProviderImpl<ModelField>(recordCredential);
-recordModel.setBoundClass(ModelField.class);
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-Query<ModelField> query = provider.createQuery(model);
-query.add(Conditions.like("name", "Eleaz%")).add(Conditions.equals("age", 33));
+var query = provider.createQuery(model);
+query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions.equals("age", 33));
 
 //Every call will fetch max 10 records and will start from eleventh record.
-query.setCount(10).setOffset(1).orderBy("email").asc(); // Here you can call desc() method
+query.count = 10;
+query.offset = 1;
 
-RecordResults results = query.list();
-for (ModelField item : results.getRecords()) {
-  String email = item.getEmail():
-}
+query.orderBy("email").asc(); // Here you can call desc() method
 
+query.getResults(function(error, results) {
+  console.log(results.records);
+});
 ```
 
 #Group by and Projection
 
-To group by a specifics fields, the query object provides the method **groupBy**.  To use this clause, you must set the projection to the query using **setProjection** method.
+To group by a specifics fields, the query object provides the function `groupBy`.  To use this clause, you must call getResultsWithProjection.
 
-```java
-DynamicProvider<ModelField> provider = new DynamicProviderImpl<ModelField>(recordCredential);
-recordModel.setBoundClass(ModelField.class);
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-Query<ModelField> query = provider.createQuery(model);
-query.add(Conditions.like("name", "Eleaz%")).add(Conditions.equals("age", 33));
+var query = provider.createQuery(model);
+query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions.equals("age", 33));
 
 //Every call will fetch max 10 records and will start from eleventh record.
-query.setCount(10).setOffset(1).orderBy("email").asc(); // Here you can call desc() method
+query.count = 10;
+query.offset = 10;
+
+query.orderBy("email").asc(); // Here you can call desc() method
 
 // These are the fields in your projection
 query.groupBy("name, email");
-query.setProjection(new String[]{"name", "email"});
 
-RecordResults results = query.list();
-for (ModelField item : results.getRecords()) {
-  String email = item.getEmail():
-}
-
+var results = query.getResultsWithProjection(["name", "email"], function(error, results) {
+   console.log(results);
+});
 ```
 #Functions as a Projection
 
 Query object provides the setProjection method to specify the fields you want to fetch in a query.  In this method you can set the function you want to call. Every function must has an alias to bind it with a setMethod in BoundInstance object.
 
-```java
-DynamicProvider<ModelField> provider = new DynamicProviderImpl<ModelField>(recordCredential);
-recordModel.setBoundClass(ModelField.class);
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-Query<ModelField> query = provider.createQuery(model);
+var query = provider.createQuery(model);
 
-query.add(Conditions.like("name", "Eleaz%"));
-query.setProjection(new String[]{"avg(age) as average"});
+query.add(dc.conditions.like("name", "Eleaz%"));
 
-ModelField instance = query.list().get(0);
-Double average = instance.getAverage();
-
+var results = query.getResultsWithProjection(["avg(age) as average"], function(error, results) {
+   console.log(results['average']);
+});
 ```
 
 #Update using selection
@@ -607,22 +579,19 @@ There are situations where you need to update records using a specific selection
 
 In this example we are going to update the **name** where age > 24
 
-```java
-DynamicProvider<ModelField> provider = new DynamicProviderImpl<ModelField>(recordCredential);
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-ModelField instance = new ModelField();
-instance.setName("Eleazar");
-
-provider.setBoundInstance(instance);
-
-Query<ModelField> query = provider.createQuery(model);
-query.add(Conditions.greaterThan("age", 24));
+var query = provider.createQuery(model);
+query.add(dc.conditions.greaterThan("age", 24));
 
 /*
- This method will use the BoundInstance to get the data different than null (in this case the only data to use is **name**)
- and the query object to update only the records that match with the selection.
-*/
-provider.update(query);
+ * This method will use the data object and the query object to update only the records that match with the selection.
+ */
+provider.updateWithSelection(query, {}, function(error) {
+   console.log("Updated!");
+});
 ```
 
 #Delete using selection
@@ -631,15 +600,18 @@ There are situations where you need to delete records using a specific selection
 
 In this example we are going to delete the records where age > 24
 
-```java
-DynamicProvider<ModelField> provider = new DynamicProviderImpl<ModelField>(recordCredential);
+```javascript
+var dc = require('dynamicloud');
+var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
-Query<ModelField> query = provider.createQuery(model);
-query.add(Conditions.greaterThan("age", 24));
+var query = provider.createQuery(model);
+query.add(dc.conditions.greaterThan("age", 24));
 
 /*
- This method will delete the records that match with the selection.
-*/
-provider.delete(query);
+ * This method will use the query object to delete only the records that match with the selection.
+ */
+provider.deleteWithSelection(query, {}, function(error) {
+   console.log("Deleted!");
+});
 ```
  
