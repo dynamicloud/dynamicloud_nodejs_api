@@ -218,7 +218,7 @@ query.add(dc.conditions.like("name", "Eleaz%"));
 */
 query.getResults(function(error, results) {
   _.each(results.records, function(item) {
-      String email = item.getEmail();
+      var email = item.getEmail();
   });
 });
 ```
