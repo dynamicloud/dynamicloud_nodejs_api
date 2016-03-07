@@ -195,9 +195,9 @@ var Query = {
             'criteria': criteria
         }, function (kind, json) {
             if (kind === 'OK') {
-                callback(null, du.buildRecordResults(json));
+                instance.listWasCalled = true;
 
-                instance.listWasCalled = true
+                callback(null, du.buildRecordResults(json));
             } else {
                 callback('ERROR', json);
             }
@@ -212,10 +212,10 @@ var Query = {
      */
     next: function (callback) {
         if (!this.listWasCalled) {
-            throw new Error("You have to call list(callback) method first.");
+            throw new Error("You have to call either getResults(callback) or getResultsByProjection methods first.");
         }
 
-        this.offset = this.offset() + this.count;
+        this.offset = this.offset + this.count;
 
         return this.getResults(callback);
     }
