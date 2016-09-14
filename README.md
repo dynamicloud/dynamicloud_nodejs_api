@@ -269,7 +269,7 @@ var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
 var query = provider.createQuery(modelId);
  
-query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions..equals("age", 33));
+query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions.equals("age", 33));
 ```
 
 These two calls of add function will produce something like this:
