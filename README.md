@@ -533,7 +533,7 @@ query.getResults(function(error, results) {
 
 #Group by and Projection
 
-To group by a specifics fields, the query object provides the function `groupBy`.  To use this clause, you must call getResultsWithProjection.
+To group by a specific fields, the query object provides the function `groupBy`.  To use this clause, you must call getResultsWithProjection.
 
 ```javascript
 var dc = require('dynamicloud');
