@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dynamicloud/dynamicloud_nodejs_api.svg?branch=master)](https://travis-ci.org/dynamicloud/dynamicloud_nodejs_api)
+
 # Dynamicloud NodeJs API v1.0.5
 This NodeJs API helps you to use the power of Dynamicloud.  This API follows our Rest documentation to execute CRUD operations according to http methods.
 
