@@ -1,7 +1,7 @@
 var assert = require('assert');
-var dc = require('../src/app.js');
+var dc = require('../app.js');
 var helper = require('./helper.js');
-var du = require('../src/utils/dynamic_utils');
+var du = require('../utils/dynamic_utils');
 
 helper.describe('Condition building process', function () {
     helper.it('Should build an equals condition', function () {

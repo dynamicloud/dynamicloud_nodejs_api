@@ -4,7 +4,9 @@
   "description": "Dynamicloud node js API allows you to store data into the cloud.",
   "main": "app.js",
   "private": false,
-  "scripts": {},
+  "scripts": {
+    "test": "node test/dynamic_criteria.js"
+  },
   "keywords": [
     "cloud",
     "computing",
