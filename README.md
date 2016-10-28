@@ -613,3 +613,4 @@ provider.deleteWithSelection(query, function(error) {
    console.log("Deleted!");
 });
 ```
+
