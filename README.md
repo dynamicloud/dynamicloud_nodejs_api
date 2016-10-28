@@ -268,14 +268,13 @@ var dc = require('dynamicloud');
 var provider = dc.buildProvider({csk: 'csk#...', aci: 'aci#...'});
 
 var query = provider.createQuery(modelId);
-query.add(dc.conditions.like("name", "Eleaz%"));
  
-query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions..equals("age", 33));
+query.add(dc.conditions.like("name", "Eleaz%")).add(dc.conditions.equals("age", 33));
 ```
 
 These two calls of add function will produce something like this:
 
-`name like 'Eleazar%' AND age = 33`
+`name like 'Eleaz%' AND age = 33`
 
 Query object provides a function called `getResultsWithProjection(projection, callback)`, this function will execute a request using the *ModelId* and *Conditions*. The response from Dynamicloud will be encapsulated in a javascript object.
 
@@ -534,7 +533,7 @@ query.getResults(function(error, results) {
 
 #Group by and Projection
 
-To group by a specifics fields, the query object provides the function `groupBy`.  To use this clause, you must call getResultsWithProjection.
+To group by a specific fields, the query object provides the function `groupBy`.  To use this clause, you must call getResultsWithProjection.
 
 ```javascript
 var dc = require('dynamicloud');
